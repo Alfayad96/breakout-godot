@@ -1,0 +1,85 @@
+[gd_scene load_steps=8 format=3 uid="uid://c0figfrdycp6u"]
+
+[ext_resource type="PackedScene" uid="uid://8xi8o8y5gjb5" path="res://scenes/paddle.tscn" id="1_oq28n"]
+[ext_resource type="PackedScene" uid="uid://c350jky8qleek" path="res://scenes/ball.tscn" id="2_b5tok"]
+[ext_resource type="PackedScene" uid="uid://nqecvj32k46c" path="res://scenes/stein.tscn" id="3_udnaf"]
+
+[sub_resource type="GDScript" id="GDScript_udnaf"]
+script/source = "extends Node2D
+
+@onready var seinobjekt = preload(\"res://scenes/stein.tscn\")
+
+var columns = 32
+var rows = 7
+var margin = 50
+var colors = []  # Farben als globale Variable speichern
+
+func _ready() -> void:
+	colors = getColors()
+	colors.shuffle()
+	setuplevel()
+
+func setuplevel():
+	for r in range(rows):
+		for c in range(columns):
+			var random = randi_range(0, 2)
+			if random == 0:
+				var newstein = seinobjekt.instantiate()
+				add_child(newstein)
+				newstein.position = Vector2(margin + (34 * c), margin + (34 * r))
+
+				var sprite = newstein.get_node_or_null(\"Sprite2D\")
+				if sprite:
+					if r < 3:
+						sprite.modulate = colors[2]  # Oberste Reihenfarbe
+					elif r < 6:
+						sprite.modulate = colors[1]  # Mittlere Reihenfarbe
+					else:
+						sprite.modulate = colors[0]  # Unterste Reihenfarbe
+
+func getColors() -> Array:
+	return [
+		Color(0, 1, 1, 1),
+		Color(0.54, 0.17, 0.89, 1),
+		Color(0.68, 1, 0.18, 1),
+		Color(1, 1, 1, 1)
+	]
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b5tok"]
+size = Vector2(12, 662)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_udnaf"]
+size = Vector2(11, 657)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_04hsl"]
+size = Vector2(1173, 20)
+
+[node name="level" type="Node2D"]
+script = SubResource("GDScript_udnaf")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+
+[node name="Paddle" parent="." instance=ExtResource("1_oq28n")]
+position = Vector2(552, 617)
+
+[node name="Ball" parent="." instance=ExtResource("2_b5tok")]
+position = Vector2(722, 356)
+
+[node name="wände" type="StaticBody2D" parent="."]
+
+[node name="Linke wand" type="CollisionShape2D" parent="wände"]
+position = Vector2(-4, 321)
+shape = SubResource("RectangleShape2D_b5tok")
+
+[node name="Richte wand" type="CollisionShape2D" parent="wände"]
+position = Vector2(1156.5, 323.5)
+shape = SubResource("RectangleShape2D_udnaf")
+
+[node name="obere wand" type="CollisionShape2D" parent="wände"]
+position = Vector2(576, -7)
+shape = SubResource("RectangleShape2D_04hsl")
+
+[node name="Stein" parent="." instance=ExtResource("3_udnaf")]
+position = Vector2(471, 373)

@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://nqecvj32k46c"]
+
+[ext_resource type="Script" uid="uid://btlpap1uk37ry" path="res://scripts/stein.gd" id="1_o22ls"]
+[ext_resource type="Texture2D" uid="uid://b27nn0cx3ncy0" path="res://assets/stein.png" id="1_v1842"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o22ls"]
+size = Vector2(32, 32)
+
+[node name="Stein" type="RigidBody2D"]
+gravity_scale = 0.0
+script = ExtResource("1_o22ls")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_v1842")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_o22ls")
